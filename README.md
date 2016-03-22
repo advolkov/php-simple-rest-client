@@ -6,4 +6,5 @@ Simple rest-api client for php
 
 # Basic usage
 > $get = SimpleRestClient::get("https://httpbin.org/get", ["asd" => 123, "zxc" => 456]);
+
 > $post = SimpleRestClient::post("https://httpbin.org/post", ['asd' => 'test'], ['Content-Type' => 'application/json']);
