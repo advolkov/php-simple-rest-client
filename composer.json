@@ -1,6 +1,7 @@
 {
     "name": "antonvolkov/php-simple-rest-client",
     "description": "Simple rest-api client for php",
+    "version":"v0.1",
     "license": "MIT",
     "authors": [
         {
