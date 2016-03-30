@@ -1,7 +1,6 @@
 {
     "name": "antonvolkov/php-simple-rest-client",
     "description": "Simple rest-api client for php",
-    "version":"0.1",
     "license": "MIT",
     "authors": [
         {
@@ -12,10 +11,7 @@
     "keywords": ["php", "rest", "api", "json", "post", "get"],
     "type": "library",
     "require": {
-        "php": ">=5.5.30"
-    },
-    "require-dev": {
-        "php": ">=5.5.31"
+        "php": ">=5.5.*"
     },
     "autoload": {
         "files": ["src/SimpleRestClient.php"]
