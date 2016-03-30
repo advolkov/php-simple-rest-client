@@ -19,8 +19,7 @@ class SimpleRestClient
     private static function makeRequest($url, $method = self::METHOD_GET, $params = [], $headers = [])
     {
         $ch = curl_init();
-        $opts = self::prepareOpts($url, $method, $params, $headers);
-        curl_setopt_array($ch, $opts);
+        curl_setopt_array($ch, self::prepareOpts($url, $method, $params, $headers));
         $response = curl_exec($ch);
         curl_close($ch);
 
@@ -29,7 +28,6 @@ class SimpleRestClient
 
     private static function prepareOpts($url, $method, $params, $headers)
     {
-        $params_str = "";
         $opts = [
             CURLOPT_HEADER => true,
             CURLOPT_RETURNTRANSFER => true,
@@ -43,16 +41,8 @@ class SimpleRestClient
 
         //prepare get params
         if ($method == self::METHOD_GET) {
-            if (is_array($params)) {
-                foreach ($params as $key => $value) {
-                    $params_str .= "$key=$value&";
-                }
-                $params_str = rtrim($params_str, "&");
-            } else {
-                $params_str = $params;
-            }
             $opts[CURLOPT_URL] .= strpos($opts[CURLOPT_URL], '?') ? '&' : '?';
-            $opts[CURLOPT_URL] .= $params_str;
+            $opts[CURLOPT_URL] .= http_build_query($params);
         }
 
         //prepare post params
