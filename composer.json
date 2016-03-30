@@ -11,7 +11,7 @@
     "keywords": ["php", "rest", "api", "json", "post", "get"],
     "type": "library",
     "require": {
-        "php": ">=5.5.*"
+        "php": ">=5.5"
     },
     "autoload": {
         "files": ["src/SimpleRestClient.php"]
