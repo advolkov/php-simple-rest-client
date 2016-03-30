@@ -23,13 +23,12 @@ class SimpleRestClient
         $response = curl_exec($ch);
         curl_close($ch);
 
-        return $response;
+        return json_decode($response, 1);
     }
 
     private static function prepareOpts($url, $method, $params, $headers)
     {
         $opts = [
-            CURLOPT_HEADER => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL => $url,
         ];
@@ -40,13 +39,13 @@ class SimpleRestClient
         }
 
         //prepare get params
-        if ($method == self::METHOD_GET) {
+        if ($method == self::METHOD_GET && !empty($params)) {
             $opts[CURLOPT_URL] .= strpos($opts[CURLOPT_URL], '?') ? '&' : '?';
             $opts[CURLOPT_URL] .= http_build_query($params);
         }
 
         //prepare post params
-        if ($method == self::METHOD_POST) {
+        if ($method == self::METHOD_POST && !empty($params)) {
             $opts[CURLOPT_POST] = true;
             if (is_array($params)) {
                 $params_str = json_encode($params);
