@@ -28,6 +28,7 @@ class SimpleRestClient
 
     private static function prepareOpts($url, $method, $params, $headers, $username, $pass)
     {
+        $json = false;
         $opts = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL => $url,
@@ -40,6 +41,7 @@ class SimpleRestClient
         //prepare headers
         foreach ($headers as $key => $header) {
             $opts[CURLOPT_HTTPHEADER][] = "$key:$header";
+            if (strpos($header, "application/json") !== false) $json = true;
         }
 
         //prepare get params
@@ -52,7 +54,8 @@ class SimpleRestClient
         if ($method == self::METHOD_POST && !empty($params)) {
             $opts[CURLOPT_POST] = true;
             if (is_array($params)) {
-                $params_str = json_encode($params);
+                $params_str = http_build_query($params, '', '&');
+                if ($json) $params_str = json_encode($params);
             } else {
                 $params_str = $params;
             }
