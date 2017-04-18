@@ -2,7 +2,7 @@
 Simple rest-api client for php
 
 # Installation 
-> $ php composer.phar require advolkov/php-simple-rest-client
+> $ php composer.phar require antonvolkov/php-simple-rest-client
 
 # Basic usage
 > $get = SimpleRestClient::get("https://httpbin.org/get", ["asd" => 123, "zxc" => 456]);
