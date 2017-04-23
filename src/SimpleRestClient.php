@@ -6,14 +6,14 @@ class SimpleRestClient
         METHOD_GET = "GET",
         METHOD_POST = "POST";
 
-    public static function get($url, $params = [], $headers = [], $decode_response = true, $username = "", $pass = "")
+    public static function get($url, $params = [], $headers = [], $decode_response = true, $username = "", $pass = "", $proxy = [])
     {
-        return self::makeRequest($url, self::METHOD_GET, $params, $headers, $decode_response, $username, $pass);
+        return self::makeRequest($url, self::METHOD_GET, $params, $headers, $decode_response, $username, $pass, $proxy);
     }
 
-    public static function post($url, $params = [], $headers = [], $decode_response = true, $username = "", $pass = "")
+    public static function post($url, $params = [], $headers = [], $decode_response = true, $username = "", $pass = "", $proxy = [])
     {
-        return self::makeRequest($url, self::METHOD_POST, $params, $headers, $decode_response, $username, $pass);
+        return self::makeRequest($url, self::METHOD_POST, $params, $headers, $decode_response, $username, $pass, $proxy);
     }
 
     private static function makeRequest(
@@ -23,11 +23,12 @@ class SimpleRestClient
         $headers = [],
         $decode_response = true,
         $username = "",
-        $pass = ""
+        $pass = "",
+        $proxy = []
     )
     {
         $ch = curl_init();
-        curl_setopt_array($ch, self::prepareOpts($url, $method, $params, $headers, $username, $pass));
+        curl_setopt_array($ch, self::prepareOpts($url, $method, $params, $headers, $username, $pass, $proxy));
         $response = curl_exec($ch);
         curl_close($ch);
 
@@ -36,7 +37,7 @@ class SimpleRestClient
         return $response;
     }
 
-    private static function prepareOpts($url, $method, $params, $headers, $username, $pass)
+    private static function prepareOpts($url, $method, $params, $headers, $username, $pass, $proxy)
     {
         $json = false;
         $opts = [
@@ -70,6 +71,12 @@ class SimpleRestClient
                 $params_str = $params;
             }
             $opts[CURLOPT_POSTFIELDS] = $params_str;
+        }
+
+        //prepare proxy
+        if (!empty($proxy)) {
+            $opts[CURLOPT_PROXY] = $proxy["host"];
+            $opts[CURLOPT_PROXYPORT] = $proxy["port"];
         }
 
         return $opts;
