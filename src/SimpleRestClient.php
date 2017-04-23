@@ -6,24 +6,34 @@ class SimpleRestClient
         METHOD_GET = "GET",
         METHOD_POST = "POST";
 
-    public static function get($url, $params = [], $headers = [], $username = "", $pass = "")
+    public static function get($url, $params = [], $headers = [], $decode_response = true, $username = "", $pass = "")
     {
-        return self::makeRequest($url, self::METHOD_GET, $params, $headers, $username, $pass);
+        return self::makeRequest($url, self::METHOD_GET, $params, $headers, $decode_response, $username, $pass);
     }
 
-    public static function post($url, $params = [], $headers = [], $username = "", $pass = "")
+    public static function post($url, $params = [], $headers = [], $decode_response = true, $username = "", $pass = "")
     {
-        return self::makeRequest($url, self::METHOD_POST, $params, $headers, $username, $pass);
+        return self::makeRequest($url, self::METHOD_POST, $params, $headers, $decode_response, $username, $pass);
     }
 
-    private static function makeRequest($url, $method = self::METHOD_GET, $params = [], $headers = [], $username = "", $pass = "")
+    private static function makeRequest(
+        $url,
+        $method = self::METHOD_GET,
+        $params = [],
+        $headers = [],
+        $decode_response = true,
+        $username = "",
+        $pass = ""
+    )
     {
         $ch = curl_init();
         curl_setopt_array($ch, self::prepareOpts($url, $method, $params, $headers, $username, $pass));
         $response = curl_exec($ch);
         curl_close($ch);
 
-        return json_decode($response, 1);
+        if ($decode_response) return json_decode($response, 1);
+
+        return $response;
     }
 
     private static function prepareOpts($url, $method, $params, $headers, $username, $pass)
