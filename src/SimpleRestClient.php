@@ -5,15 +5,16 @@ class SimpleRestClient
     const
         METHOD_GET = "GET",
         METHOD_POST = "POST";
+    const HTTP_OK = 200;
 
-    public static function get($url, $params = [], $headers = [], $decode_response = true, $username = "", $pass = "", $proxy = [])
+    public static function get($url, $params = [], $headers = [], $check_status = true, $decode_response = true, $username = "", $pass = "", $proxy = [])
     {
-        return self::makeRequest($url, self::METHOD_GET, $params, $headers, $decode_response, $username, $pass, $proxy);
+        return self::makeRequest($url, self::METHOD_GET, $params, $headers, $check_status, $decode_response, $username, $pass, $proxy);
     }
 
-    public static function post($url, $params = [], $headers = [], $decode_response = true, $username = "", $pass = "", $proxy = [])
+    public static function post($url, $params = [], $headers = [], $check_status = true, $decode_response = true, $username = "", $pass = "", $proxy = [])
     {
-        return self::makeRequest($url, self::METHOD_POST, $params, $headers, $decode_response, $username, $pass, $proxy);
+        return self::makeRequest($url, self::METHOD_POST, $params, $headers, $check_status, $decode_response, $username, $pass, $proxy);
     }
 
     private static function makeRequest(
@@ -21,6 +22,7 @@ class SimpleRestClient
         $method = self::METHOD_GET,
         $params = [],
         $headers = [],
+        $check_status = true,
         $decode_response = true,
         $username = "",
         $pass = "",
@@ -30,6 +32,10 @@ class SimpleRestClient
         $ch = curl_init();
         curl_setopt_array($ch, self::prepareOpts($url, $method, $params, $headers, $username, $pass, $proxy));
         $response = curl_exec($ch);
+        if ($check_status) {
+            $info = curl_getinfo($ch);
+            if ($info['http_code'] != self::HTTP_OK) return $info;
+        }
         curl_close($ch);
 
         if ($decode_response) return json_decode($response, 1);
