@@ -7,14 +7,14 @@ class SimpleRestClient
         METHOD_POST = "POST";
     const HTTP_OK = 200;
 
-    public static function get($url, $params = [], $headers = [], $check_status = true, $decode_response = true, $username = "", $pass = "", $proxy = [])
+    public static function get($url, $params = [], $headers = [], $check_status = true, $decode_response = true, $username = "", $pass = "", $proxy = [], $follow_location = false)
     {
-        return self::makeRequest($url, self::METHOD_GET, $params, $headers, $check_status, $decode_response, $username, $pass, $proxy);
+        return self::makeRequest($url, self::METHOD_GET, $params, $headers, $check_status, $decode_response, $username, $pass, $proxy, $follow_location);
     }
 
-    public static function post($url, $params = [], $headers = [], $check_status = true, $decode_response = true, $username = "", $pass = "", $proxy = [])
+    public static function post($url, $params = [], $headers = [], $check_status = true, $decode_response = true, $username = "", $pass = "", $proxy = [], $follow_location = false)
     {
-        return self::makeRequest($url, self::METHOD_POST, $params, $headers, $check_status, $decode_response, $username, $pass, $proxy);
+        return self::makeRequest($url, self::METHOD_POST, $params, $headers, $check_status, $decode_response, $username, $pass, $proxy, $follow_location);
     }
 
     private static function makeRequest(
@@ -26,11 +26,13 @@ class SimpleRestClient
         $decode_response = true,
         $username = "",
         $pass = "",
-        $proxy = []
+        $proxy = [],
+        $follow_location = false
     )
     {
         $ch = curl_init();
         curl_setopt_array($ch, self::prepareOpts($url, $method, $params, $headers, $username, $pass, $proxy));
+        if ($follow_location) curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $response = curl_exec($ch);
         if ($check_status) {
             $info = curl_getinfo($ch);
